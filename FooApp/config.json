@@ -2,14 +2,15 @@
 	"title":"Foo App",
 	"db":
 	{
-		"password":"",
-		"user":"",
-		"name":"",
-		"domain":"",
-		"engine":"",
-		"port":""
+		"password":"hello_password",
+		"user":"hello_user",
+		"name":"hello_db",
+		"domain":"localhost",
+		"engine":"postgres",
+		"port":"1111"
 	},
 	"csv_test_file":"hello.csv",
+	"main_test_file":"hello2.csv",
 	"env":{
 		"dev":true
 	}

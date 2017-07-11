@@ -1,7 +1,8 @@
 const fs 		= require('fs')
 const Worker 	= require('webworker-threads').Worker;
 const csv 		= require('csv');
-
+const appdir 	= require('path').basename(__dirname);
+console.log(appdir)
 /**
  * Represents a csvService instance used for parsing csv strings
  * returns a promise with the instance
@@ -12,8 +13,9 @@ const csv 		= require('csv');
 var csvService = function(services) 
 {
 	var self 			= this
-	const env 			= services.config.env
-	const csv_test_file = services.config.csv_test_file
+	const config 		= services.config
+	const env 			= config.env
+	const csv_test_file = config.csv_test_file
 
 	/**
 	 * Unit Testing function for csvService
@@ -21,9 +23,28 @@ var csvService = function(services)
 	 */
 	self.test = function() 
 	{
-		return new Promise(function(resolve, reject)
+		const _csv = appdir+config.csv_test_file
+		if(env.dev) console.log("========= reading test csv ===========")
+		if(env.dev) console.log(_csv)
+		if(env.dev) console.log("======================================")
+		return new Promise(function(resolve, reject) {
+			fs.open(_csv, 'r', function(err, fd) 
+			{
+			  	if (err) {
+					if(env.dev) console.error("===== failed to read csv from test file =======")
+			    	if (err.code === 'ENOENT') {
+			      		return reject(new Error('csv test file '+config.csv_test_file+' does not exist'));
+			    	}
+				    return reject(new Error(err));
+				}
+				if(env.dev) console.log("===== succesfully read csv from test file =======")
+				resolve(fd)
+			})
+		})
+		.then(function(result)
 		{
-
+			if(env.dev) console.log(result)
+			return parseBackground(result)
 		})
 
 	}
@@ -112,11 +133,11 @@ var csvService = function(services)
 			    if(env.dev) console.error(err)
 			    if(env.dev) console.error("=======================================")
 
-				reject(err)
+				return reject(new Error(err))
 			})
 		})
 	}
 
 	return self.init()
 }
-module.export = cssService;
+module.exports = csvService;

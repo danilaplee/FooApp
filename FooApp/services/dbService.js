@@ -1,22 +1,6 @@
-const sequelize = require("sequelize")
+const Sequelize = require("sequelize")
 const uuid 		= require('uuid')
 
-const User = sequelize.define('user', 
-{
-  Name: {
-    type: Sequelize.STRING
-  },
-  Birthday: {
-    type: Sequelize.STRING
-  },
-  Username: {
-    type: Sequelize.STRING
-  },
-  Import: {
-  	type: Sequelize.STRING
-  }
-
-})
 
 /**
  * Represents a dbService instance used for connecting to postgresql database
@@ -24,29 +8,52 @@ const User = sequelize.define('user',
  * @constructor
  * @param {Object} Services - Services index instance
  */
-
 var dbService = function(services) 
 {
 	var self 		= this
-	const config 	= services.config
- 	const env 		= config.env
-	self.sequelize 	= new Sequelize(config.engine+'://'+config.user+':'+config.password+'@'+config.domain+':'+config.port+'/'+config.name);
+	const config 	= services.config.db
+ 	const env 		= services.config.env
+ 	const con_string= config.engine+'://'+config.user+':'+config.password+'@'+config.domain+':'+config.port+'/'+config.name
+	self.sequelize 	= new Sequelize(con_string);
 
 	/**
-	 * Unit Testing function for dbService
+	 * initiliaze authenticated connection to database for sequelize 
 	 * @promise
 	 */
-	self.test = function() {
-		return sequelize.authenticate()
+	self.authSequelize = function() {
+		return self.sequelize.authenticate()
 	}
 
+
+	/**
+	 * Sequelize User model initiliazer
+	 * @promise
+	 */
+	self.initUser = function() {
+
+		self.User = self.sequelize.define('user', 
+		{
+		  Name: {
+		    type: Sequelize.STRING
+		  },
+		  Birthday: {
+		    type: Sequelize.STRING
+		  },
+		  Username: {
+		    type: Sequelize.STRING
+		  },
+		  Import: {
+		  	type: Sequelize.STRING
+		  }
+		})
+	}
 	/**
 	 * Get Users function, returns all the users in database
 	 * returns a promise with result data or db error
 	 * @promise
 	 */
 	self.getUsers = function() {
-		return User.findAll();
+		return self.User.findAll();
 	}
 
 	/**
@@ -59,7 +66,7 @@ var dbService = function(services)
 	 * @param {string} params.Username - username of the user
 	 */
 	self.getUsersByAttributes = function(params) {
-		return User.findAll({
+		return self.User.findAll({
 			where:params
 		})
 	}
@@ -77,7 +84,8 @@ var dbService = function(services)
 	{
 		return new Promise(function(resolve, reject)
 		{
-			User
+			self
+			.User
 			.sync({force: true})
 			.then(() => {
 
@@ -114,7 +122,8 @@ var dbService = function(services)
 	{
 		return new Promise(function(resolve, reject)
 		{
-			User
+			self
+			.User
 			.sync({force: true})
 			.then(() => {
 			    
@@ -145,7 +154,7 @@ var dbService = function(services)
 	 * @param {string} params.Username - username of the user
 	 */
 	self.deleteUsers = function(params) {
-		return User.destroy({
+		return self.User.destroy({
 			where:params
 		})
 	}
@@ -157,23 +166,31 @@ var dbService = function(services)
 	 */
 	self.init = function() 
 	{
+	    if(env.dev) console.log("====== initializing db service with url =======")
+	 	if(env.dev) console.log(con_string)
+	    if(env.dev) console.log("===============================================")
+
 		return new Promise(function(resolve, reject)
 		{
-			self
-			.test()
+			return self
+			.authSequelize()
 			.then(() => {
 			    
 			    if(env.dev) console.log('Connection has been established successfully.');
-
+			    return self.initUser()
+			})
+			.then(() => {
 				resolve(self)
 			})
 			.catch((err) => {
 			    
+			    if(env.dev) console.error("=======================================")
 			    if(env.dev) console.error('Unable to connect to the database:');
+			    if(env.dev) console.error("=======================================")
 			    if(env.dev) console.error(err)
 			    if(env.dev) console.error("=======================================")
 				
-				reject(err)
+				reject(new Error(err))
 			})
 		})
 	}
@@ -181,4 +198,4 @@ var dbService = function(services)
 	return self.init()
 }
 
-module.export = dbService;
+module.exports = dbService;

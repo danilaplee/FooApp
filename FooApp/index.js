@@ -25,8 +25,57 @@ var FooApp = function(config)
 	 */
 	self.test = function() {
 
+		var params = {}
 		return new Promise(function(resolve, reject) {
+			self.config.csv_test_file = self.config.main_test_file
+			self
+			.services
+			.csv
+			.test()
+			.then(function(data)
+			{
+				if(env.dev) console.log("====== succesfully run csv unit test =======")
+				if(env.dev) console.log(data)
+				if(env.dev) console.log("============================================")
 
+				return self.importUsers(data)
+			})
+			.then(function(response)
+			{
+				if(env.dev) console.log("====== succesfully written unit test data to db =======")
+				if(env.dev) console.log(response)
+				if(env.dev) console.log("=======================================================")
+				
+				params = {"Import":response.import}
+				
+				if(env.dev) console.log("====== Import params "+JSON.stringify(params)+" =======")
+
+				return self.getUsers(params)
+			})
+			.then(function(response){
+
+				if(env.dev) console.log("====== succesfully got unit test data from db =========")
+				if(env.dev) console.log(response)
+				if(env.dev) console.log("=======================================================")
+
+				return self.db.deleteUsers(params)
+			})
+			.then(function(response){
+
+				if(env.dev) console.log("====== succesfully deleted unit test data from db =====")
+				if(env.dev) console.log(response)
+				if(env.dev) console.log("=======================================================")
+
+				return resolve()
+			})
+			.catch(function(err){
+
+				if(env.dev) console.error("===== FooApp unit test failed, with error: =====")
+				if(env.dev) console.error(err)
+				if(env.dev) console.error("================================================")
+
+				return reject(new Error(err))
+			})
 		});
 	}
 
@@ -93,33 +142,33 @@ var FooApp = function(config)
 	self.init = function() {
 		return new Promise(function(resolve, reject)
 		{
-			if(env.dev) console.log("======== initializing "+config.title+" controller =========");
+			if(env.dev) console.log("======== initializing "+config.title+" =========");
 
 			self
 			.services(self)
 			.then((instance) => {
 
-				if(env.dev) console.log("========== "+config.title+" controller services ready ============");
+				if(env.dev) console.log("========== "+config.title+" services ready ============");
 				if(env.dev) console.log(instance)
-				if(env.dev) console.log("==================================================================");
+				if(env.dev) console.log("=======================================================");
 				if(env.dev) console.log(self.services)
-				if(env.dev) console.log("==================================================================");
-				if(env.dev) console.log("========== starting "+config.title+" controller tests ============");
+				if(env.dev) console.log("=======================================================");
+				if(env.dev) console.log("========== starting "+config.title+" tests ============");
 
 				return self.test()
 			})
 			.then(() => {
-				resolve(self)
+				return resolve(self)
 			})
 			.catch((err) => {
-				if(env.dev) console.error("======== failed initializing "+config.title+" controller =========");
+				if(env.dev) console.error("======== failed initializing "+config.title+" =========");
 				if(env.dev) console.error(err)
-				if(env.dev) console.error("==================================================================");
-				reject(err)
+				if(env.dev) console.error("=======================================================");
+				return reject(err)
 			})
 		})
 	}
 
 	return self.init();
 }
-module.export = FooApp
+module.exports = FooApp

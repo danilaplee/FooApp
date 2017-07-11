@@ -1,25 +1,27 @@
 const express 			= require('express');
 const router 			= express.Router();
-const FooApp 			= require("../FooApp");
 const FooAppConfig 		= require("../FooApp/config.json");
 const env 				= FooAppConfig.env
+const FooApp 			= require("../FooApp");
 const foo 				= new FooApp(FooAppConfig);
-
 /* GET home page. */
 router.get('/', function(req, res, next) 
 {
-  res.render('index', { title: appConfig.title })
+  res.render('index', { title: FooAppConfig.title })
 
 })
 
+console.log("====== starting "+FooAppConfig.title+" with env.dev = "+env.dev+" =====")
 ///USERS API
-foo.then(function(instance)
+foo
+.then(function(instance)
 {
 	if(env.dev) console.log("======== succesfully initialised "+foo.config.title+" instance =====")
 	if(env.dev) console.log(instance)
 	if(env.dev) console.log("========================================================================")
 	if(env.dev) console.log(foo)
 	if(env.dev) console.log("========================================================================")
+
 
 	router.post('/users', function(req, res, next) 
 	{
@@ -38,6 +40,7 @@ foo.then(function(instance)
 		})
 	})
 
+	
 	router.get("/users", function(req, res, next)
 	{
 		foo
@@ -53,10 +56,10 @@ foo.then(function(instance)
 })
 .catch(function(err){
 
-	if(env.dev) console.error("=========== failed to initialise "+appConfig.title+" instance =====")
+	if(env.dev) console.error("=========== failed to initialize "+FooAppConfig.title+" instance =====")
 	if(env.dev) console.error(err)
 	if(env.dev) console.error("===================================================================")
-	if(env.dev) console.error(app)
+	if(env.dev) console.error(foo)
 	if(env.dev) console.error("===================================================================")
 
 })
