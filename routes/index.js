@@ -1,6 +1,6 @@
 const express 			= require('express');
 const router 			= express.Router();
-const FooAppConfig 		= require("../FooApp/config.json");
+const FooAppConfig 		= require("../FooApp/config");
 const env 				= FooAppConfig.env
 const FooApp 			= require("../FooApp");
 const foo 				= new FooApp(FooAppConfig);

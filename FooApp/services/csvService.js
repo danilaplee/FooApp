@@ -2,14 +2,17 @@ const fs 		= require('fs')
 const Worker 	= require('webworker-threads').Worker;
 const csv 		= require('csv');
 const appdir 	= require('path').basename(__dirname);
+
+console.log("==== service dir =====")
 console.log(appdir)
+console.log("======================")
+
 /**
  * Represents a csvService instance used for parsing csv strings
  * returns a promise with the instance
  * @constructor
  * @param {Object} Services - Services index instance
  */
-
 var csvService = function(services) 
 {
 	var self 			= this
@@ -46,7 +49,6 @@ var csvService = function(services)
 			if(env.dev) console.log(result)
 			return parseBackground(result)
 		})
-
 	}
 
 	/**

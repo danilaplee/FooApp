@@ -113,10 +113,10 @@ var dbService = function(services)
 	 * Write Many Users function for fast bulk import into postgresql write cache
 	 * return a promise with write result status or error 
 	 * @promise
-	 * @param {Object} User - user from csv import
-	 * @param {string} user.name - name of the user
-	 * @param {string} user.birthday - birthday of the user
-	 * @param {string} user.username - username of the user
+	 * @param {Object} User 			- user from csv import
+	 * @param {string} user.name 		- name of the user
+	 * @param {string} user.birthday 	- birthday of the user
+	 * @param {string} user.username 	- username of the user
 	 */
 	self.writeUsers = function(params) 
 	{
