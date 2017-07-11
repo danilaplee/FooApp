@@ -1,0 +1,16 @@
+{
+	"title":"Foo App",
+	"db":
+	{
+		"password":"",
+		"user":"",
+		"name":"",
+		"domain":"",
+		"engine":"",
+		"port":""
+	},
+	"csv_test_file":"hello.csv",
+	"env":{
+		"dev":true
+	}
+}
