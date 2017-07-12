@@ -2,10 +2,6 @@ const fs 		= require('fs')
 const appdir 	= __dirname.replace("services", "")
 const csv 		= require('csv-parse');
 
-if(env.dev) console.log("==== service dir =====")
-if(env.dev) console.log(appdir)
-if(env.dev) console.log("======================")
-
 /**
  * Represents a csvService instance used for parsing csv strings
  * returns a promise with the instance
