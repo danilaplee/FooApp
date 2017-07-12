@@ -17,6 +17,7 @@ foo
 .then(function(instance)
 {
 	foo = instance
+
 	if(env.dev) console.log("======== succesfully initialised "+FooAppConfig.title+" instance =====")
 	if(env.dev) console.log(foo)
 	if(env.dev) console.log("========================================================================")
