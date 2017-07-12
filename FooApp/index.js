@@ -30,9 +30,8 @@ var FooApp = function(config)
 		var params = {}
 		return new Promise(function(resolve, reject) 
 		{
-			self.config.csv_test_file = self.config.main_test_file
 			
-			const _csv = appdir+"/"+config.csv_test_file
+			const _csv = appdir+"/"+self.config.main_test_file
 
 			console.log("====== new csv test file =======")
 			console.log(_csv)
@@ -42,8 +41,8 @@ var FooApp = function(config)
 			.importUsers({csv:fs.readFileSync(_csv)})
 			.then(function(response)
 			{
-				if(env.dev) console.log("====== succesfully written unit test data to db =======")
-				if(env.dev) console.log("=======================================================")
+				if(env.dev) console.log("====== succesfully written unit test data(100k records) to db =======")
+				if(env.dev) console.log("=====================================================================")
 				
 				params = {"Import":response.result.import}
 				
@@ -53,15 +52,16 @@ var FooApp = function(config)
 			})
 			.then(function(response){
 
-				if(env.dev) console.log("====== succesfully got unit test data from db =========")
-				if(env.dev) console.log("=======================================================")
+				if(env.dev) console.log("====== succesfully got unit test data(100k records) from db =========")
+				if(env.dev) console.log("=====================================================================")
 
 				return self.db.deleteUsers(params)
 			})
 			.then(function(response){
 
-				if(env.dev) console.log("====== succesfully deleted unit test data from db =====")
-				if(env.dev) console.log("=======================================================")
+				if(env.dev) console.log("====== succesfully deleted unit test(100k records) data from db =====")
+				if(env.dev) console.log(response)
+				if(env.dev) console.log("=====================================================================")
 
 				return resolve()
 			})
@@ -97,7 +97,7 @@ var FooApp = function(config)
 			.then((result) => {
 
 				if(env.dev) console.log("======== csv parse result for import #"+import_id+" =========");
-				// if(env.dev) console.log(result);
+				if(env.dev) console.log(result.length);
 				if(env.dev) console.log("======== csv parse result for import #"+import_id+" =========");
 				
 				for (var i = result.length - 1; i >= 0; i--) result[i].Import = import_id

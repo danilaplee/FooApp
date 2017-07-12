@@ -46,7 +46,9 @@ var dbService = function(services)
 		  	type: Sequelize.STRING
 		  }
 		})
+		return self.User.sync()
 	}
+
 	/**
 	 * Get Users function, returns all the users in database
 	 * returns a promise with result data or db error
@@ -86,17 +88,12 @@ var dbService = function(services)
 		{
 			self
 			.User
-			.sync({force: true})
-			.then(() => {
-
-			  return User.create({
+		  	.create({
 			  	Name 	:params.name,
 			  	Birthday:params.birthday,
 			  	Username:params.username,
 			  	Import  :uuid()
-			  })
-
-			})
+		  	})
 			.then(resolve)
 			.catch((err) => {
 
@@ -123,14 +120,9 @@ var dbService = function(services)
 		return new Promise(function(resolve, reject)
 		{
 			if(env.dev) console.log("==== starting write many =====")
-			self.User
-			.sync({force: true})
-			.then(() => {
-			    
-			    if(env.dev) console.log('Performing write of many users to database');
-
-			  	return self.User.bulkCreate(params)
-			})
+			self
+			.User
+		  	.bulkCreate(params)
 			.then(resolve)
 			.catch((err) => {
 
