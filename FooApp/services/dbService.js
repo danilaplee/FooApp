@@ -123,7 +123,8 @@ var dbService = function(services)
 		return new Promise(function(resolve, reject)
 		{
 			if(env.dev) console.log("==== starting write many =====")
-			self.User.sync({force: true})
+			self.User
+			.sync({force: true})
 			.then(() => {
 			    
 			    if(env.dev) console.log('Performing write of many users to database');

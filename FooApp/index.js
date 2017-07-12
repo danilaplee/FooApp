@@ -43,7 +43,6 @@ var FooApp = function(config)
 			.then(function(response)
 			{
 				if(env.dev) console.log("====== succesfully written unit test data to db =======")
-				if(env.dev) console.log(response)
 				if(env.dev) console.log("=======================================================")
 				
 				params = {"Import":response.result.import}
@@ -55,7 +54,6 @@ var FooApp = function(config)
 			.then(function(response){
 
 				if(env.dev) console.log("====== succesfully got unit test data from db =========")
-				if(env.dev) console.log(response)
 				if(env.dev) console.log("=======================================================")
 
 				return self.db.deleteUsers(params)
@@ -63,7 +61,6 @@ var FooApp = function(config)
 			.then(function(response){
 
 				if(env.dev) console.log("====== succesfully deleted unit test data from db =====")
-				if(env.dev) console.log(response)
 				if(env.dev) console.log("=======================================================")
 
 				return resolve()
@@ -100,7 +97,7 @@ var FooApp = function(config)
 			.then((result) => {
 
 				if(env.dev) console.log("======== csv parse result for import #"+import_id+" =========");
-				if(env.dev) console.log(result);
+				// if(env.dev) console.log(result);
 				if(env.dev) console.log("======== csv parse result for import #"+import_id+" =========");
 				
 				for (var i = result.length - 1; i >= 0; i--) result[i].Import = import_id
@@ -147,11 +144,9 @@ var FooApp = function(config)
 			.services(self)
 			.then((instance) => {
 
+				self.services = instance
 				if(env.dev) console.log("========== "+config.title+" services ready ============");
-				if(env.dev) console.log(instance)
-				if(env.dev) console.log("=======================================================");
 				if(env.dev) console.log(self.services)
-				if(env.dev) console.log("=======================================================");
 				if(env.dev) console.log("========== starting "+config.title+" tests ============");
 
 				return self.test()

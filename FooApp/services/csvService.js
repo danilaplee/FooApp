@@ -23,8 +23,6 @@ var csvService = function(services)
 	{
 		const _csv = appdir+config.csv_test_file
 		if(env.dev) console.log("========= reading test csv ===========")
-		// if(env.dev) console.log(_csv)
-		// if(env.dev) console.log("======================================")
 		return new Promise(function(resolve, reject) {
 			fs.open(_csv, 'r', function(err, fd, d) 
 			{
@@ -42,7 +40,6 @@ var csvService = function(services)
 		})
 		.then(function(result)
 		{
-			// if(env.dev) console.log(result)
 			return self.parseBackground(result)
 		})
 	}
@@ -59,17 +56,24 @@ var csvService = function(services)
 		if(env.dev) console.log("starting background parser")
 
 		return new Promise(function(resolve, reject) {
-			csv(csv_string, function(err,data) {
-				if(err) return reject(err)
-				const keys = data[0]
-				var _data  = []
-				for (var i = data.length - 1; i >= 1; i--) {
-					var obj = {}
-					for (var n = 0; n < keys.length; n++) obj[keys[n]] = data[i][n]
-					_data.push(obj)
-				}
-				resolve(_data)
-			})
+			try {
+				csv(csv_string, function(err,data) {
+					if(err) return reject(err)
+					const keys = data[0]
+					var _data  = []
+					for (var i = data.length - 1; i >= 1; i--) {
+						var obj = {}
+						for (var n = 0; n < keys.length; n++) obj[keys[n]] = data[i][n]
+						_data.push(obj)
+					}
+					resolve(_data)
+				})
+			}
+			catch(err){
+				console.error("csv parser error")
+				console.error(err)
+				return reject(err)
+			}
 		})
 	}
 
@@ -87,7 +91,6 @@ var csvService = function(services)
 			.then((data) => {
 
 			    if(env.dev) console.log('Succesfully parsed test csv file');
-			    if(env.dev) console.log(data);
 			    if(env.dev) console.log('================================');
 
 				resolve(self)
