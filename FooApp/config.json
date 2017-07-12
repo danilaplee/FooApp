@@ -10,7 +10,7 @@
 		"port":"5432"
 	},
 	"csv_test_file":"hello.csv",
-	"main_test_file":"hello.csv",
+	"main_test_file":"hello2.csv",
 	"env":{
 		"dev":true
 	}
