@@ -5,7 +5,7 @@
 		"password":"foobar",
 		"user":"foo",
 		"name":"foo",
-		"domain":"0.0.0.0",
+		"domain":"localhost",
 		"engine":"postgres",
 		"port":"5432"
 	},
