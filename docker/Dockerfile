@@ -1,4 +1,4 @@
-#INSTALL UBUNTU
+#INSTALL NODEJS ENABLED BUILD
 FROM google/nodejs
 
 #INSTAL NODEJS
@@ -6,14 +6,12 @@ RUN apt-get update && apt-get -y install curl
 
 #ENABLE WEB APP
 RUN git clone https://github.com/danilaplee/FooApp.git .
-# ADD ../ /app
 RUN cd /app
 RUN npm install
 RUN ls -a /app
 
 #INSTALL POSTGRESQL 9.4
 RUN apt-get install -y postgresql
-
 
 #ENABLE POSTGRESQL
 USER postgres
