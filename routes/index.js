@@ -16,12 +16,10 @@ console.log("====== starting "+FooAppConfig.title+" with env.dev = "+env.dev+" =
 foo
 .then(function(instance)
 {
-	if(env.dev) console.log("======== succesfully initialised "+foo.config.title+" instance =====")
-	if(env.dev) console.log(instance)
-	if(env.dev) console.log("========================================================================")
+	foo = instance
+	if(env.dev) console.log("======== succesfully initialised "+FooAppConfig.title+" instance =====")
 	if(env.dev) console.log(foo)
 	if(env.dev) console.log("========================================================================")
-
 
 	router.post('/users', function(req, res, next) 
 	{
@@ -44,7 +42,7 @@ foo
 	router.get("/users", function(req, res, next)
 	{
 		foo
-		.getUsers(req.params)
+		.getUsers(req.query)
 		.then((result) => {
 			res.status(200).send(result)
 		})

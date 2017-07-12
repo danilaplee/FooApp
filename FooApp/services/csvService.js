@@ -1,7 +1,8 @@
 const fs 		= require('fs')
+const sys = require('sys');
 const Worker 	= require('webworker-threads').Worker;
-const csv 		= require('csv');
-const appdir 	= require('path').basename(__dirname);
+const appdir 	= __dirname.replace("services", "")
+const csv 		= require('csv-parse');
 
 console.log("==== service dir =====")
 console.log(appdir)
@@ -18,7 +19,7 @@ var csvService = function(services)
 	var self 			= this
 	const config 		= services.config
 	const env 			= config.env
-	const csv_test_file = config.csv_test_file
+	var csv_test_file 	= config.csv_test_file
 
 	/**
 	 * Unit Testing function for csvService
@@ -28,10 +29,10 @@ var csvService = function(services)
 	{
 		const _csv = appdir+config.csv_test_file
 		if(env.dev) console.log("========= reading test csv ===========")
-		if(env.dev) console.log(_csv)
-		if(env.dev) console.log("======================================")
+		// if(env.dev) console.log(_csv)
+		// if(env.dev) console.log("======================================")
 		return new Promise(function(resolve, reject) {
-			fs.open(_csv, 'r', function(err, fd) 
+			fs.open(_csv, 'r', function(err, fd, d) 
 			{
 			  	if (err) {
 					if(env.dev) console.error("===== failed to read csv from test file =======")
@@ -41,13 +42,14 @@ var csvService = function(services)
 				    return reject(new Error(err));
 				}
 				if(env.dev) console.log("===== succesfully read csv from test file =======")
-				resolve(fd)
+				const _data = fs.readFileSync(_csv, "utf8")
+				resolve(_data)
 			})
 		})
 		.then(function(result)
 		{
-			if(env.dev) console.log(result)
-			return parseBackground(result)
+			// if(env.dev) console.log(result)
+			return self.parseBackground(result)
 		})
 	}
 
@@ -58,57 +60,22 @@ var csvService = function(services)
 	 * @promise
 	 * @param {string} csv - incoming csv string from http body payload
 	 */
-	self.parseBackground = function(csv_string) 
-	{
-		return new Promise(function(resolve, reject)
-		{
-			var worker = new Worker(function()
-			{
-				const w = this
-				w.onmessage = function(event) 
-				{
+	self.parseBackground = function(csv_string) {
 
-					if(env.dev) console.log("======= parser worker received event =======")
-					if(env.dev) console.log(event)
-					if(env.dev) console.log("======= parser worker received event =======")
+		if(env.dev) console.log("starting background parser")
 
-					csv.parse(event.data, function(err,data)
-					{
-
-						if(env.dev) console.log("======= parser worker received result =======")
-						if(env.dev) console.log(err)
-						if(env.dev) console.log(data)
-						if(env.dev) console.log("======= parser worker received result =======")
-
-						
-						if(err != null) w.postMessage({"status":"error", "result":err});
-						else 			w.postMessage({"status":"success", "result":data});
-
-						w.close()
-					})
+		return new Promise(function(resolve, reject) {
+			csv(csv_string, function(err,data) {
+				if(err) return reject(err)
+				const keys = data[0]
+				var _data  = []
+				for (var i = data.length - 1; i >= 1; i--) {
+					var obj = {}
+					for (var n = 0; n < keys.length; n++) obj[keys[n]] = data[i][n]
+					_data.push(obj)
 				}
+				resolve(_data)
 			})
-
-			worker.onmessage = function(event) 
-			{
-			  	if(env.dev) console.log("Worker said : " + event.data);
-			  	
-			  	if(event.data.status == "error") {
-					
-					if(env.dev) console.error("Failed to parse csv with background worker")
-				    if(env.dev) console.error(event.data.result)
-				    if(env.dev) console.error("==========================================")
-
-					return reject(event.data.result)
-			  	}
-			  	
-			  	if(env.dev) console.log("Parsed csv file with handmade method")
-
-			  	resolve(event.data.result)
-			}
-
-			worker.postMessage(csv_string);
-			
 		})
 	}
 
@@ -123,9 +90,11 @@ var csvService = function(services)
 		{
 			self
 			.test()
-			.then(() => {
+			.then((data) => {
 
 			    if(env.dev) console.log('Succesfully parsed test csv file');
+			    if(env.dev) console.log(data);
+			    if(env.dev) console.log('================================');
 
 				resolve(self)
 			})

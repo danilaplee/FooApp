@@ -31,7 +31,7 @@ var dbService = function(services)
 	 */
 	self.initUser = function() {
 
-		self.User = self.sequelize.define('user', 
+		self.User = self.sequelize.define('csv_user', 
 		{
 		  Name: {
 		    type: Sequelize.STRING
@@ -122,14 +122,13 @@ var dbService = function(services)
 	{
 		return new Promise(function(resolve, reject)
 		{
-			self
-			.User
-			.sync({force: true})
+			if(env.dev) console.log("==== starting write many =====")
+			self.User.sync({force: true})
 			.then(() => {
 			    
 			    if(env.dev) console.log('Performing write of many users to database');
 
-			  	return User.bulkCreate(params.users)
+			  	return self.User.bulkCreate(params)
 			})
 			.then(resolve)
 			.catch((err) => {

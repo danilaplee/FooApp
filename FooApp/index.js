@@ -1,5 +1,7 @@
 const Services 	= require("./services")
 const uuid 		= require('uuid')
+const appdir 	= __dirname.replace("services", "")
+const fs 		= require("fs")
 
 /**
  * FooApp Initializer
@@ -26,27 +28,25 @@ var FooApp = function(config)
 	self.test = function() {
 
 		var params = {}
-		return new Promise(function(resolve, reject) {
+		return new Promise(function(resolve, reject) 
+		{
 			self.config.csv_test_file = self.config.main_test_file
-			self
-			.services
-			.csv
-			.test()
-			.then(function(data)
-			{
-				if(env.dev) console.log("====== succesfully run csv unit test =======")
-				if(env.dev) console.log(data)
-				if(env.dev) console.log("============================================")
+			
+			const _csv = appdir+"/"+config.csv_test_file
 
-				return self.importUsers(data)
-			})
+			console.log("====== new csv test file =======")
+			console.log(_csv)
+			console.log("================================")
+
+			self
+			.importUsers({csv:fs.readFileSync(_csv)})
 			.then(function(response)
 			{
 				if(env.dev) console.log("====== succesfully written unit test data to db =======")
 				if(env.dev) console.log(response)
 				if(env.dev) console.log("=======================================================")
 				
-				params = {"Import":response.import}
+				params = {"Import":response.result.import}
 				
 				if(env.dev) console.log("====== Import params "+JSON.stringify(params)+" =======")
 
@@ -95,7 +95,6 @@ var FooApp = function(config)
 		return new Promise(function(resolve, reject)
 		{
 			self
-			.services
 			.csv
 			.parseBackground(params.csv)
 			.then((result) => {
@@ -130,8 +129,8 @@ var FooApp = function(config)
 	 * @param {string?} params.Import - id of the import
 	 */
 	self.getUsers = function(params) {
-		if(params.Import) return self.services.db.getUsersByAttributes(params);
-		return self.services.db.getUsers()
+		if(params.Import) return self.db.getUsersByAttributes(params);
+		return self.db.getUsers()
 	}
 
 	/**
