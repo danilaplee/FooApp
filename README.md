@@ -20,6 +20,6 @@ cd docker && docker build .
 #### all the configuration is in FooApp/config.json
 
 
-#### to enjoy the the docs got to http://localhost:5050/api-docs/#/
+#### to enjoy the the interactive docs got to http://localhost:5050/api-docs/#/
 
 #### by Danila Plee
