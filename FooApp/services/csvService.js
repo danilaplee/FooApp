@@ -1,12 +1,10 @@
 const fs 		= require('fs')
-const sys = require('sys');
-const Worker 	= require('webworker-threads').Worker;
 const appdir 	= __dirname.replace("services", "")
 const csv 		= require('csv-parse');
 
-console.log("==== service dir =====")
-console.log(appdir)
-console.log("======================")
+if(env.dev) console.log("==== service dir =====")
+if(env.dev) console.log(appdir)
+if(env.dev) console.log("======================")
 
 /**
  * Represents a csvService instance used for parsing csv strings
