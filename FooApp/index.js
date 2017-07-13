@@ -33,9 +33,9 @@ var FooApp = function(config)
 			
 			const _csv = appdir+"/"+self.config.main_test_file
 
-			console.log("====== new csv test file =======")
-			console.log(_csv)
-			console.log("================================")
+// 			console.log("====== new csv test file =======")
+// 			console.log(_csv)
+// 			console.log("================================")
 
 			self
 			.importUsers({csv:fs.readFileSync(_csv)})
