@@ -41,7 +41,7 @@ var FooApp = function(config)
 			.importUsers({csv:fs.readFileSync(_csv)})
 			.then(function(response)
 			{
-				if(env.dev) console.log("====== succesfully written unit test data(100k records) to db =======")
+				if(env.dev) console.log("====== succesfully written unit test data to db =======")
 				if(env.dev) console.log("=====================================================================")
 				
 				params = {"Import":response.result.import}
@@ -52,14 +52,14 @@ var FooApp = function(config)
 			})
 			.then(function(response){
 
-				if(env.dev) console.log("====== succesfully got unit test data(100k records) from db =========")
+				if(env.dev) console.log("====== succesfully got unit test data from db =========")
 				if(env.dev) console.log("=====================================================================")
 
 				return self.db.deleteUsers(params)
 			})
 			.then(function(response){
 
-				if(env.dev) console.log("====== succesfully deleted unit test(100k records) data from db =====")
+				if(env.dev) console.log("====== succesfully deleted unit test data from db =====")
 				if(env.dev) console.log(response)
 				if(env.dev) console.log("=====================================================================")
 
